@@ -87,7 +87,9 @@ export const createUserDocumentFromAuth = async (userAuth, additionalInformation
     }
   }
 
-  return userDocRef
+  /* return userDocRef */
+  /* added for saga */
+  return userSnapshot
 }
 
 export const createAuthUserWithEmailAndPassword = async (email, password) => {
@@ -106,4 +108,18 @@ export const signOutUser = async () => await signOut(auth)
 
 export const onAuthStateChangedListner = (callback) => {
   onAuthStateChanged(auth, callback)
+}
+
+/* added for saga */
+export const getCurrentUser = () => {
+  return new Promise((resolve, reject) => {
+    const unsubscribe = onAuthStateChanged(
+      auth,
+      (userAuth) => {
+        unsubscribe()
+        resolve(userAuth)
+      },
+      reject,
+    )
+  })
 }
